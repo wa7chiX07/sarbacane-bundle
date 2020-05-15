@@ -1,0 +1,3 @@
+sarbacane_homepage:
+    path:     /sarbacane
+    defaults: { _controller: SarbacaneBundle:Default:index }
