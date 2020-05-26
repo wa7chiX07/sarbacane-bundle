@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Acme\SarbacaneBundle\Services;
+namespace DotIt\SarbacaneBundle\Services;
 
 
 use Symfony\Component\DependencyInjection\ContainerInterface;

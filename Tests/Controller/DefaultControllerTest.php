@@ -1,6 +1,6 @@
 <?php
 
-namespace Acme\SarbacaneBundle\Tests\Controller;
+namespace DotIt\SarbacaneBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

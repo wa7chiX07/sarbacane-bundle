@@ -1,6 +1,6 @@
 <?php
 
-namespace Acme\SarbacaneBundle\DependencyInjection;
+namespace DotIt\SarbacaneBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Acme\SarbacaneBundle\DependencyInjection;
+namespace DotIt\SarbacaneBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;

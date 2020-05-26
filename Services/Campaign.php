@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Acme\SarbacaneBundle\Services;
+namespace DotIt\SarbacaneBundle\Services;
 
 
 class Campaign
