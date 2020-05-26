@@ -18,7 +18,6 @@ class CampaignManager extends BaseManager
     public static function getCampaigns($limit= null,$offset=null)
     {
         $curl = parent::getCurl(self::$baseUrl.'campaigns?limit='.$limit.'&offset='.$offset);
-        //$curl = curl_setopt($curl,CURLOPT_POSTFIELDS,'limit='.$limit.'&offset='.$offset);
         return json_decode(curl_exec($curl));
         curl_close($curl);
     }

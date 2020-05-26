@@ -17,7 +17,6 @@ class BaseManager
     {
         self::$apiKey= $container->getParameter('apiKey');
         self::$accountId = $container->getParameter('accountId');
-//        self::$params = $parameterBag;
     }
 
     private static function getCurlWithAuth($url)
