@@ -3,6 +3,13 @@ services:
     autowire: true
     autoconfigure: true
 
+  Acme\SarbacaneBundle\Services\CampaignManager:
+    arguments: ["@service_container"]
+    public: true
+  Acme\SarbacaneBundle\Services\ListManager:
+    arguments: ["@service_container"]
+    public: true
 
-  sarbacane.campaign:
-    class: Acme\SarbacaneBundle\Services\CampaignManager
+
+#  sarbacane.campaign:
+#    class: Acme\SarbacaneBundle\Services\CampaignManager

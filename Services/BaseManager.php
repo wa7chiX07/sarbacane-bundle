@@ -4,6 +4,7 @@
 namespace Acme\SarbacaneBundle\Services;
 
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class BaseManager
@@ -12,11 +13,11 @@ class BaseManager
     protected static $apiKey;
     protected static $accountId;
     protected static $params;
-    public function __construct(ParameterBagInterface $parameterBag)
+    public function __construct(ContainerInterface $container)
     {
-        self::$apiKey= $parameterBag->get('apiKey');
-        self::$accountId = $parameterBag->get('accountId');
-        self::$params = $parameterBag;
+        self::$apiKey= $container->getParameter('apiKey');
+        self::$accountId = $container->getParameter('accountId');
+//        self::$params = $parameterBag;
     }
 
     private static function getCurlWithAuth($url)

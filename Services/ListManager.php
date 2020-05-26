@@ -4,19 +4,20 @@
 namespace Acme\SarbacaneBundle\Services;
 
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class ListManager extends BaseManager
 {
-    public function __construct(ParameterBagInterface $parameterBag)
+    public function __construct(ContainerInterface $container)
     {
-        parent::__construct($parameterBag);
+        parent::__construct($container);
     }
+
     public function getList($limit= null,$offset=null)
     {
-        $curl = parent::getCurl(self::$baseUrl.'lists');
-        $curl = curl_setopt($curl,CURLOPT_POSTFIELDS,'limit='.$limit.'&offset='.$offset);
-        return curl_exec($curl);
+        $curl = parent::getCurl(self::$baseUrl.'lists?limit='.$limit.'&offset='.$offset);
+        return json_decode(curl_exec($curl));
         curl_close($curl);
 
     }
