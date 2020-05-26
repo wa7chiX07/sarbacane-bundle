@@ -15,7 +15,8 @@ class ModelManager extends BaseManager
     public static function getModels($limit= null,$offset= null)
     {
         $curl = parent::getCurl(self::$baseUrl.'templates?limit='.$limit.'&offset='.$offset);
-        return json_decode(curl_exec($curl));
+        $result = json_decode(curl_exec($curl));
+        return $result->templates;
         curl_close($curl);
     }
 

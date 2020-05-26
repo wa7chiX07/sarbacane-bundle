@@ -9,6 +9,7 @@ services:
   DotIt\SarbacaneBundle\Services\ListManager:
     arguments: ["@service_container"]
     public: true
+  DotIt\SarbacaneBundle\Services\ModelManager: ~
 
 
 #  sarbacane.campaign:
