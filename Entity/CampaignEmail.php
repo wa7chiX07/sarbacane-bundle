@@ -4,6 +4,9 @@
 namespace DotIt\SarbacaneBundle\Entity;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
 class CampaignEmail
 {
     protected $id;
@@ -13,6 +16,13 @@ class CampaignEmail
     protected $kind;
 
     protected $campaignId;
+
+    protected $recipients;
+
+    public function __construct()
+    {
+        $this->recipients = new ArrayCollection();
+    }
 
     /**
      * @return mixed
@@ -76,6 +86,24 @@ class CampaignEmail
     public function setCampaignId($campaignId)
     {
         $this->campaignId = $campaignId;
+    }
+
+    /**
+     * @return Collection | CampaignRecipient
+     */
+    public function getRecipients()
+    {
+        return $this->recipients;
+    }
+
+    public function addRecipient(CampaignRecipient $recipient)
+    {
+        if(!$this->recipients->contains($recipient))
+        {
+            $this->recipients[] = $recipient;
+            $recipient->setCampaign($this);
+        }
+        return $this;
     }
 
 

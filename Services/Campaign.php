@@ -6,7 +6,7 @@ namespace DotIt\SarbacaneBundle\Services;
 
 class Campaign
 {
-    public $id = null;
+//    public $id = null;
     public $name = null;
     public $emailFrom = null;
     public $aliasFrom =null;

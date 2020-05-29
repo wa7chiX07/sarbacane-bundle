@@ -21,14 +21,12 @@ class CampaignManager extends BaseManager
         return json_decode(curl_exec($curl));
         curl_close($curl);
     }
-    public static function createCampaign($campaign)
+    public static function createCampaign(Campaign $campaign)
     {
         $curl = parent::postCurl(self::$baseUrl.'campaigns/email',
             json_encode($campaign)
         );
-        $result = curl_exec($curl);
-        var_dump($result);die();
-        return $result;
+        return curl_exec($curl);
         curl_close($curl);
 
     }
@@ -36,7 +34,6 @@ class CampaignManager extends BaseManager
     {
         $curl = parent::postCurl(self::$baseUrl.'campaigns/'.$campaignId.'/send',null);
         $result = curl_exec($curl);
-        var_dump($result);die();
         return $result;
         curl_close($curl);
 

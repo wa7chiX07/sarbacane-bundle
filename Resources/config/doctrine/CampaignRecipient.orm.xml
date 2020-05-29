@@ -3,18 +3,16 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                   http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-    <entity name="DotIt\SarbacaneBundle\Entity\CampaignEmail" table="srb_campaign_email">
+    <entity name="DotIt\SarbacaneBundle\Entity\CampaignRecipient" table="srb_campaign_recipient">
         <id name="id" column="id" type="integer">
             <generator strategy="AUTO" />
         </id>
-        <field name="name" column="name" nullable="false">
+        <field name="email" column="email" nullable="false">
         </field>
-        <field name="kind" column="kind" nullable="false">
+        <field name="phone" column="phone" nullable="false">
         </field>
-        <field name="campaignId" column="campaignId" nullable="false">
-        </field>
-        <one-to-many target-entity="DotIt\SarbacaneBundle\Entity\CampaignRecipient" mapped-by="campaign"
-                     field="recipients">
-        </one-to-many>
+        <many-to-one target-entity="DotIt\SarbacaneBundle\Entity\CampaignEmail" field="campaign" inversed-by="recipients">
+        </many-to-one>
+
     </entity>
 </doctrine-mapping>
