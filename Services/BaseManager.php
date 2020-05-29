@@ -12,11 +12,12 @@ class BaseManager
     protected static $baseUrl = 'https://sarbacaneapis.com/v1/';
     protected static $apiKey;
     protected static $accountId;
-    protected static $params;
+    protected static $container;
     public function __construct(ContainerInterface $container)
     {
         self::$apiKey= $container->getParameter('apiKey');
         self::$accountId = $container->getParameter('accountId');
+        self::$container = $container;
     }
 
     private static function getCurlWithAuth($url)

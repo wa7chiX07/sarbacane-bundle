@@ -4,6 +4,8 @@
 namespace DotIt\SarbacaneBundle\Services;
 
 
+use DotIt\SarbacaneBundle\Entity\CampaignEmail;
+use DotIt\SarbacaneBundle\Entity\CampaignRecipient;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -21,6 +23,13 @@ class CampaignManager extends BaseManager
         return json_decode(curl_exec($curl));
         curl_close($curl);
     }
+    public static function getCampaignInfo($campaignId)
+    {
+        $curl = parent::getCurl(self::$baseUrl.'campaigns/'.$campaignId);
+        return json_decode(curl_exec($curl));
+        curl_close($curl);
+
+    }
     public static function createCampaign(Campaign $campaign)
     {
         $curl = parent::postCurl(self::$baseUrl.'campaigns/email',
@@ -32,9 +41,27 @@ class CampaignManager extends BaseManager
     }
     public static function sendCampaign($campaignId)
     {
+        $campaign = self::getCampaignInfo($campaignId)->campaign;
         $curl = parent::postCurl(self::$baseUrl.'campaigns/'.$campaignId.'/send',null);
         $result = curl_exec($curl);
-        return $result;
+        $campaignEmail = new CampaignEmail();
+        $campaignEmail->setCampaignId($campaignId);;
+        $campaignEmail->setKind($campaign->kind);
+        $campaignEmail->setName($campaign->name);
+        $campaignEmail->setStatus($result);
+        self::$container->get('doctrine')->getManager()->persist($campaignEmail);
+        $recipients = self::campaignGetRecipients($campaignId);
+        foreach ($recipients as $recipient)
+        {
+            $campaignRecipient = new CampaignRecipient();
+            $campaignRecipient->setPhone($recipient->phone);
+            $campaignRecipient->setEmail($recipient->email);
+            self::$container->get('doctrine')->getManager()->persist($campaignRecipient);
+            $campaignEmail->addRecipient($campaignRecipient);
+        }
+        self::$container->get('doctrine')->getManager()->persist($campaignEmail);
+        self::$container->get('doctrine')->getManager()->flush();
+     //   return $result;
         curl_close($curl);
 
     }
@@ -62,9 +89,8 @@ class CampaignManager extends BaseManager
     }
     public static function campaignGetRecipients($campaignId,$limit= null,$offset=null)
     {
-        $curl = parent::getCurl(self::$baseUrl.'campaigns/'.$campaignId.'/recipients');
-        $curl = curl_setopt($curl,CURLOPT_POSTFIELDS,'limit='.$limit.'&offset='.$offset);
-        return curl_exec($curl);
+        $curl = parent::getCurl(self::$baseUrl.'campaigns/'.$campaignId.'/recipients?limit='.$limit.'&offset='.$offset);
+        return json_decode( curl_exec($curl));
         curl_close($curl);
 
     }

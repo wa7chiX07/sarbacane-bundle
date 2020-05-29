@@ -11,6 +11,8 @@
         </field>
         <field name="kind" column="kind" nullable="false">
         </field>
+        <field name="status" column="status" nullable="false">
+        </field>
         <field name="campaignId" column="campaignId" nullable="false">
         </field>
         <one-to-many target-entity="DotIt\SarbacaneBundle\Entity\CampaignRecipient" mapped-by="campaign"

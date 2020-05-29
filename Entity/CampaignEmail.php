@@ -17,6 +17,8 @@ class CampaignEmail
 
     protected $campaignId;
 
+    protected $status;
+
     protected $recipients;
 
     public function __construct()
@@ -87,6 +89,24 @@ class CampaignEmail
     {
         $this->campaignId = $campaignId;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param mixed $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+
 
     /**
      * @return Collection | CampaignRecipient
