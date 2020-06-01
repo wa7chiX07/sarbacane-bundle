@@ -26,17 +26,16 @@ class ListManager extends BaseManager
         $curl = parent::postCurl(self::$baseUrl.'lists',
             json_encode($name)
         );
-        $result = curl_exec($curl);
-        return $result;
+        return json_decode( curl_exec($curl));
         curl_close($curl);
 
     }
-    public static function addContacts($contacts,$listId)
+    public static function addContacts($listId,$contacts)
     {
         $curl = parent::postCurl(self::$baseUrl.'lists/'.$listId.'/contacts/import',
                 json_encode($contacts)
             );
-        return curl_exec($curl);
+        return json_decode(curl_exec($curl));
         curl_close($curl);
 
     }
