@@ -39,10 +39,16 @@ class CampaignManager extends BaseManager
         curl_close($curl);
 
     }
-    public static function sendCampaign($campaignId)
+    public static function sendCampaign($campaignId,$date = null,$time=null)
     {
+        if(!$date)
+            $date= date('Y-d-m');
+        if(!$time)
+            $time = date("H:i:s",strtotime(date("H:i:s")." +3 minutes"));
+        $date = array('requestedSendDate' => $date .'T'.$time.'z');
+
         $campaign = self::getCampaignInfo($campaignId)->campaign;
-        $curl = parent::postCurl(self::$baseUrl.'campaigns/'.$campaignId.'/send',null);
+        $curl = parent::postCurl(self::$baseUrl.'campaigns/'.$campaignId.'/send',json_encode($date));
         $result = curl_exec($curl);
         $campaignEmail = new CampaignEmail();
         $campaignEmail->setCampaignId($campaignId);;
@@ -82,7 +88,7 @@ class CampaignManager extends BaseManager
     public static function campaignSetModel($campaignId,$templateId)
     {
         $curl = parent::postCurl(self::$baseUrl.'campaigns/'.$campaignId.'/content',
-            json_encode($templateId));
+            json_encode(array('templateId'=>$templateId)));
         return curl_exec($curl);
         curl_close($curl);
 
