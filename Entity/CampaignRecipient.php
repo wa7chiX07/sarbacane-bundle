@@ -2,9 +2,9 @@
 
 
 namespace DotIt\SarbacaneBundle\Entity;
+use DotIt\SarbacaneBundle\Entity\BaseEntity as BaseEntity;
 
-
-class CampaignRecipient
+class CampaignRecipient extends BaseEntity
 {
     protected $id;
 

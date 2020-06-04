@@ -6,8 +6,9 @@ namespace DotIt\SarbacaneBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use DotIt\SarbacaneBundle\Entity\BaseEntity as BaseEntity;
 
-class CampaignEmail
+class CampaignEmail extends BaseEntity
 {
     protected $id;
 
