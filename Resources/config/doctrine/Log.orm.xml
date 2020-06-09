@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                  http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="DotIt\SarbacaneBundle\Entity\Log" table="srb_log">
+        <id name="id" column="id" type="integer">
+            <generator strategy="AUTO" />
+        </id>
+        <field name="idObject" column="idObject" nullable="true" type="integer" >
+        </field>
+        <field name="object" column="object" >
+        </field>
+        <field name="statusCode" column="statusCode" type="integer">
+        </field>
+        <field name="message" column="message" >
+        </field>
+
+    </entity>
+</doctrine-mapping>
