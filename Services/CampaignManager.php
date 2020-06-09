@@ -6,6 +6,7 @@ namespace DotIt\SarbacaneBundle\Services;
 
 use DotIt\SarbacaneBundle\Entity\CampaignEmail;
 use DotIt\SarbacaneBundle\Entity\CampaignRecipient;
+use DotIt\SarbacaneBundle\Entity\Log;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -26,7 +27,18 @@ class CampaignManager extends BaseManager
     public static function getCampaignInfo($campaignId)
     {
         $curl = parent::getCurl(self::$baseUrl.'campaigns/'.$campaignId);
-        return json_decode(curl_exec($curl));
+        $result = json_decode(curl_exec($curl));
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        if($httpCode>=400)
+        {
+            if($httpCode ==500)
+            {
+                $result->message = self::getErrorMessage($result->message);
+            }
+            throw new \Exception($result->message);
+        }
+
+        return $result;
         curl_close($curl);
 
     }
@@ -35,26 +47,69 @@ class CampaignManager extends BaseManager
         $curl = parent::postCurl(self::$baseUrl.'campaigns/email',
             json_encode($campaign)
         );
-        return json_decode(curl_exec($curl));
+
+        $result = json_decode(curl_exec($curl));
+        $httpCode = curl_getinfo($curl,CURLINFO_HTTP_CODE);
+        $log = new Log();
+        $log->setStatusCode($httpCode);
+        $log->setObject('Campaign: create new campaign ');
+        if($httpCode>=400)
+        {
+            if($httpCode==500)
+                $result->message= self::getErrorMessage($result->message);
+            $log->setMessage($result->message);
+            self::$container->get('doctrine')->getManager()->persist($log);
+            self::$container->get('doctrine')->getManager()->flush();
+            throw new \Exception($result->message);
+        }
+        $log->setMessage('success');
+        self::$container->get('doctrine')->getManager()->persist($log);
+        self::$container->get('doctrine')->getManager()->flush();
+
+        return $result;
         curl_close($curl);
 
     }
     public static function sendCampaign($campaignId,$date = null,$time=null)
     {
-        date_default_timezone_set('Africa/Tunis');
-        if(!$date)
+
+        /*if(!$date)
             $date= date('Y-d-m');
         if(!$time)
             $time = date("H:i:s",strtotime(date("H:i:s")." +3 minutes"));
-        $date = array('requestedSendDate' => $date .'T'.$time.'Z');
+        $date = array('requestedSendDate' => $date .'T'.$time.'Z');*/
 
         $campaign = self::getCampaignInfo($campaignId)->campaign;
-//        $campaign = $campaign->campaign;
-//        $curl = parent::postCurl(self::$baseUrl.'campaigns/'.$campaignId.'/send',json_encode($date));
-        $curl = parent::postCurl(self::$baseUrl.'campaigns/'.$campaignId.'/send');
-        $result = curl_exec($curl);
-      //  $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        if($date && $time)
+        {
+            $date = array('requestedSendDate' => $date .'T'.$time.'Z');
+            $curl = parent::postCurl(self::$baseUrl.'campaigns/'.$campaignId.'/send',json_encode($date));
 
+        }
+        else
+        {
+            $curl = parent::postCurl(self::$baseUrl.'campaigns/'.$campaignId.'/send');
+
+        }
+
+        $result = json_decode(curl_exec($curl));
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $log = new Log();
+        $log->setObject('Campaign Send');
+        $log->setStatusCode($httpcode);
+        if($httpcode>=400)
+        {
+            if($httpcode ==500) {
+                $result->message = parent::getErrorMessage($result->message);
+            }
+            $log->setMessage($result->message);
+            self::$container->get('doctrine')->getManager()->persist($log);
+            self::$container->get('doctrine')->getManager()->flush();
+            throw new \Exception($result->message);
+
+
+        }
+        $log->setMessage('success');
         $campaignEmail = new CampaignEmail();
         $campaignEmail->setCampaignId($campaignId);;
         $campaignEmail->setKind($campaign->kind);
@@ -70,9 +125,10 @@ class CampaignManager extends BaseManager
             self::$container->get('doctrine')->getManager()->persist($campaignRecipient);
             $campaignEmail->addRecipient($campaignRecipient);
         }
+        self::$container->get('doctrine')->getManager()->persist($log);
         self::$container->get('doctrine')->getManager()->persist($campaignEmail);
         self::$container->get('doctrine')->getManager()->flush();
-        return json_decode($result);
+        return $result;
         curl_close($curl);
 
     }
@@ -87,14 +143,54 @@ class CampaignManager extends BaseManager
     {
         $curl = parent::postCurl(self::$baseUrl.'campaigns/'.$campaignId.'/recipients',
             json_encode($recipients));
-        return curl_exec($curl);
+        $result = json_encode( curl_exec($curl));
+        $http_code = curl_getinfo($curl,CURLINFO_HTTP_CODE);
+        $log = new Log();
+        $log->setIdObject($campaignId);
+        $log->setObject('set recupients to campaign');
+        $log->setStatusCode($http_code);
+        if($http_code>=400)
+        {
+            if($http_code==500)
+                $result->message = self::getErrorMessage($result->message);
+            $log->setMessage($result->message);
+            self::$container->get('doctrine')->getManager()->persist($log);
+            self::$container->get('doctrine')->getManager()->flush();
+        }
+        $log->setMessage('success');
+        self::$container->get('doctrine')->getManager()->persist($log);
+        self::$container->get('doctrine')->getManager()->flush();
+        return $result;
+
         curl_close($curl);
     }
     public static function campaignSetModel($campaignId,$templateId)
     {
+
         $curl = parent::postCurl(self::$baseUrl.'campaigns/'.$campaignId.'/content',
             json_encode(array('templateId'=>$templateId)));
-        return curl_exec($curl);
+        $result = json_decode( curl_exec($curl));
+        $http = curl_getinfo($curl,CURLINFO_HTTP_CODE);
+        $log = new Log();
+        $log->setStatusCode($http);
+        $log->setIdObject($campaignId);
+        $log->setObject('Set Model to campaign Model id: '.$templateId);
+        if ($http>=400)
+        {
+            if($http == 500)
+                $result->message = parent::getErrorMessage($result->message);
+            $log->setMessage($result->message);
+            self::$container->get('doctrine')->getManager()->persist($log);
+            self::$container->get('doctrine')->getManager()->flush();
+            throw new \Exception($result->message);
+
+
+        }
+        $log->setMessage('success');
+        self::$container->get('doctrine')->getManager()->persist($log);
+        self::$container->get('doctrine')->getManager()->flush();
+
+        return $result;
         curl_close($curl);
 
     }

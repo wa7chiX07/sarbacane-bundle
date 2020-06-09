@@ -54,5 +54,20 @@ class BaseManager
         curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
         return $curl;
     }
+    protected static function getErrorMessage($error)
+    {
+        $pattern = "/rpc/";
+        $errors =  preg_split($pattern,$error);
+        $errorMessage="";
+        foreach ($errors as $er)
+        {
+            $errorMessage = substr_replace($er,"",0,stripos($er,"desc"));
+            if($errorMessage)
+                break;
+        }
+
+        return str_replace("desc = ","",$errorMessage);
+
+    }
 
 }
