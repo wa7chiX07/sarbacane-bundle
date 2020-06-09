@@ -37,7 +37,7 @@ class BaseManager
         curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
         return $curl;
     }
-    protected static function postCurl($url,$fields)
+    protected static function postCurl($url,$fields=null)
     {
         $curl = self::getCurlWithAuth($url);
         curl_setopt($curl,CURLOPT_CUSTOMREQUEST,'POST');

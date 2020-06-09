@@ -35,21 +35,26 @@ class CampaignManager extends BaseManager
         $curl = parent::postCurl(self::$baseUrl.'campaigns/email',
             json_encode($campaign)
         );
-        return curl_exec($curl);
+        return json_decode(curl_exec($curl));
         curl_close($curl);
 
     }
     public static function sendCampaign($campaignId,$date = null,$time=null)
     {
+        date_default_timezone_set('Africa/Tunis');
         if(!$date)
             $date= date('Y-d-m');
         if(!$time)
             $time = date("H:i:s",strtotime(date("H:i:s")." +3 minutes"));
-        $date = array('requestedSendDate' => $date .'T'.$time.'z');
+        $date = array('requestedSendDate' => $date .'T'.$time.'Z');
 
         $campaign = self::getCampaignInfo($campaignId)->campaign;
-        $curl = parent::postCurl(self::$baseUrl.'campaigns/'.$campaignId.'/send',json_encode($date));
+//        $campaign = $campaign->campaign;
+//        $curl = parent::postCurl(self::$baseUrl.'campaigns/'.$campaignId.'/send',json_encode($date));
+        $curl = parent::postCurl(self::$baseUrl.'campaigns/'.$campaignId.'/send');
         $result = curl_exec($curl);
+      //  $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
         $campaignEmail = new CampaignEmail();
         $campaignEmail->setCampaignId($campaignId);;
         $campaignEmail->setKind($campaign->kind);
@@ -67,7 +72,7 @@ class CampaignManager extends BaseManager
         }
         self::$container->get('doctrine')->getManager()->persist($campaignEmail);
         self::$container->get('doctrine')->getManager()->flush();
-     //   return $result;
+        return json_decode($result);
         curl_close($curl);
 
     }
