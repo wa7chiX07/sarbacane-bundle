@@ -63,6 +63,7 @@ class CampaignManager extends BaseManager
             throw new \Exception($result->message);
         }
         $log->setMessage('success');
+        $log->setIdObject($result->id);
         self::$container->get('doctrine')->getManager()->persist($log);
         self::$container->get('doctrine')->getManager()->flush();
 
@@ -143,19 +144,26 @@ class CampaignManager extends BaseManager
     {
         $curl = parent::postCurl(self::$baseUrl.'campaigns/'.$campaignId.'/recipients',
             json_encode($recipients));
-        $result = json_encode( curl_exec($curl));
+        $result = json_decode( curl_exec($curl));
         $http_code = curl_getinfo($curl,CURLINFO_HTTP_CODE);
         $log = new Log();
         $log->setIdObject($campaignId);
-        $log->setObject('set recupients to campaign');
+        $log->setObject('Campaign: set recipients to campaign');
         $log->setStatusCode($http_code);
         if($http_code>=400)
         {
             if($http_code==500)
                 $result->message = self::getErrorMessage($result->message);
+            if(!$result)
+            {
+                $result = new \stdClass();
+                $result->message = 'Unknown error with code '.$http_code;
+            }
+
             $log->setMessage($result->message);
             self::$container->get('doctrine')->getManager()->persist($log);
             self::$container->get('doctrine')->getManager()->flush();
+            throw new \Exception($result->message);
         }
         $log->setMessage('success');
         self::$container->get('doctrine')->getManager()->persist($log);
@@ -174,7 +182,7 @@ class CampaignManager extends BaseManager
         $log = new Log();
         $log->setStatusCode($http);
         $log->setIdObject($campaignId);
-        $log->setObject('Set Model to campaign Model id: '.$templateId);
+        $log->setObject('Campaign: set Model id: '.$templateId);
         if ($http>=400)
         {
             if($http == 500)
