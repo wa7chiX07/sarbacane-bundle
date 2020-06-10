@@ -1,0 +1,25 @@
+{
+  "name": "dotit/sarbacane-bundle",
+  "type": "library",
+  "description": "SarbacaneBundle is a Symfony 3.4 bundle for sarbacane ",
+  "keywords": ["mailing","sarbacane"],
+  "homepage": "https://github.com/wa7chiX07/sarbacane-bundle",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Chadli Ouhichi",
+      "email": "louhichi.chadli93@outlook.fr",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=5.5.9",
+    "doctrine/doctrine-bundle": "^1.6",
+    "doctrine/orm": "^2.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "DotIt\\SarbacaneBundle\\": "src/"
+    }
+  }
+}
