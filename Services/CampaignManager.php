@@ -136,8 +136,25 @@ class CampaignManager extends BaseManager
     public static function campaignSetList($campaignId, $listId)
     {
         $curl = parent::postCurl(self::$baseUrl.'campaigns/'.$campaignId.'/list',
-            json_encode($listId));
-        return curl_exec($curl);
+            json_encode(array('listId' => $listId)));
+        $result =  curl_exec($curl);
+        $httpCode = curl_getinfo($curl,CURLINFO_HTTP_CODE);
+        $log = new Log();
+        $log->setObject('Campaign: set List id : '.$listId);
+        $log->setStatusCode($httpCode);
+        $log->setIdObject($campaignId);
+        if($httpCode>=400)
+        {
+            if($httpCode==500)
+                $result->message = self::getErrorMessage($result->message);
+            $log->setMessage($result->message);
+            self::$container->get('doctrine')->getManager()->persisit($log);
+            self::$container->get('doctrine')->getManager()->flush();
+        }
+        $log->setMessage('success');
+        self::$container->get('doctrine')->getManager()->persist($log);
+        self::$container->get('doctrine')->getManager()->flush();
+        return $result;
         curl_close($curl);
     }
     public static function campaignSetRecipients($campaignId,$recipients)

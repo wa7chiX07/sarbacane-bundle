@@ -47,7 +47,7 @@ $ ./bin/console doctrine:schema:update --force
 ``` 
 ## Usage
 ```
-//**** Create email new campaign *******
+/**** Create email new campaign *******/
 
 
 $campaign = new Campaign();
