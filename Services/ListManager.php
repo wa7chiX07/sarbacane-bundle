@@ -15,7 +15,7 @@ class ListManager extends BaseManager
         parent::__construct($container);
     }
 
-    public function getList($limit= null,$offset=null)
+    public static function getList($limit= null,$offset=null)
     {
         $curl = parent::getCurl(self::$baseUrl.'lists?limit='.$limit.'&offset='.$offset);
         $result = json_decode(curl_exec($curl));
@@ -33,7 +33,7 @@ class ListManager extends BaseManager
     public static function createList($name)
     {
         $curl = parent::postCurl(self::$baseUrl.'lists',
-            json_encode($name)
+            json_encode(array('name' => $name))
         );
         $result =  json_decode( curl_exec($curl));
         $httpCode = curl_getinfo($curl,CURLINFO_HTTP_CODE);
